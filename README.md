@@ -6,35 +6,35 @@ spec](https://github.com/singer-io/getting-started/blob/master/SPEC.md).
 
 This tap:
 
-- Pulls raw data from the [Intercom v2.5 API](https://developers.intercom.com/intercom-api-reference/v2.5/reference)
+- Pulls raw data from the [Intercom v2.12 API](https://developers.intercom.com/docs/references/2.12/introduction)
 - Extracts the following resources:
-  - [Admins](https://developers.intercom.com/intercom-api-reference/reference#list-admins)
-  - [Companies](https://developers.intercom.com/intercom-api-reference/reference#list-companies)
-  - [Conversations](https://developers.intercom.com/intercom-api-reference/reference#list-conversations)
-    - [Conversation Parts](https://developers.intercom.com/intercom-api-reference/reference#get-a-single-conversation)
-  - [Data Attributes](https://developers.intercom.com/intercom-api-reference/reference#data-attributes)
-    - [Customer Attributes](https://developers.intercom.com/intercom-api-reference/reference#list-customer-data-attributes)
-    - [Company Attributes](https://developers.intercom.com/intercom-api-reference/reference#list-company-data-attributes)
-  - [Leads](https://developers.intercom.com/intercom-api-reference/reference#list-leads)
-  - [Segments](https://developers.intercom.com/intercom-api-reference/reference#list-segments)
-    - [Company Segments](https://developers.intercom.com/intercom-api-reference/reference#list-segments)
-  - [Tags](https://developers.intercom.com/intercom-api-reference/reference#list-tags-for-an-app)
-  - [Teams](https://developers.intercom.com/intercom-api-reference/reference#list-teams)
-  - [Users](https://developers.intercom.com/intercom-api-reference/reference#list-users)
+  - [Admins](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/admins/listadmins)
+  - [Companies](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/companies/listallcompanies)
+  - [Conversations](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/conversations/listconversations)
+    - [Conversation Parts](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/conversations/retrieveconversation)
+  - [Data Attributes](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/data-attributes)
+    - [Customer Attributes](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/data-attributes/lisdataattributes)
+    - [Company Attributes](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/data-attributes/lisdataattributes)
+  - [Leads](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/contacts/listcontacts)
+  - [Segments](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/segments/listsegments)
+    - [Company Segments](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/segments/listsegmentsforacontact)
+  - [Tags](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/tags/listtags)
+  - [Teams](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/teams/listteams)
+  - [Users](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/contacts/listcontacts)
 - Outputs the schema for each resource
 - Incrementally pulls data based on the input state
 
 
 ## Streams
 
-[admins](https://developers.intercom.com/intercom-api-reference/reference#list-admins)
+[admins](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/admins/listadmins)
 - Endpoint: https://api.intercom.io/admins
 - Primary key fields: id
 - Foreign key fields: team_ids
 - Replication strategy: FULL_TABLE
 - Transformations: none
 
-[companies](https://developers.intercom.com/intercom-api-reference/reference#list-companies)
+[companies](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/companies/listallcompanies)
 - Endpoint: https://api.intercom.io/companies
 - Primary key fields: id
 - Foreign key fields: segments > id, tags > id
@@ -50,7 +50,7 @@ reference#list-customer-data-attributes)
 - Replication strategy: FULL_TABLE
 - Transformations: none
 
-[company_segments](https://developers.intercom.com/intercom-api-reference/reference#list-segments)
+[company_segments](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/segments/listsegments)
 - Endpoint: https://api.intercom.io/segments?type=company
 - Primary key fields: id
 - Foreign key fields: none
@@ -58,7 +58,7 @@ reference#list-customer-data-attributes)
   - Bookmark: updated_at (date-time)
 - Transformations: none
 
-[conversations](https://developers.intercom.com/intercom-api-reference/reference#list-conversations)
+[conversations](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/conversations/listconversations)
 - Endpoint: https://api.intercom.io/conversations
 - Primary key fields: id
 - Foreign key fields: assignee > id, author > id, customer > id, customers > id, teammate > id, tags > id, user > id 
@@ -67,21 +67,21 @@ reference#list-customer-data-attributes)
   - Bookmark: updated_at (date-time)
 - Transformations: de-nest customers, tags
 
-[conversation_parts](https://developers.intercom.com/intercom-api-reference/reference#get-a-single-conversation)
+[conversation_parts](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/conversations/retrieveconversation)
 - Endpoint: https://api.intercom.io/conversations/{conversation_id}
 - Primary key fields: id
 - Foreign key fields: conversation_id, author > id
 - Replication strategy: FULL_TABLE (ALL for each changed parent Conversation)
 - Transformations: Conversation parts with parent conversation_id
 
-[customer_attributes](https://developers.intercom.com/intercom-api-reference/reference#list-customer-data-attributes)
+[customer_attributes](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/data-attributes/lisdataattributes)
 - Endpoint: https://api.intercom.io/data_attributes/customer
 - Primary key fields: _sdc_record_hash ie. the hash of [id, name, description]
 - Foreign key fields: none
 - Replication strategy: FULL_TABLE
 - Transformations: none
 
-[leads](https://developers.intercom.com/intercom-api-reference/reference#list-leads)
+[leads](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/contacts/listcontacts)
 - Endpoint: https://api.intercom.io/contacts
 - Primary key fields: id
 - Foreign key fields: companies > id, segments > id, tags > id
@@ -99,21 +99,21 @@ reference#list-customer-data-attributes)
   - Bookmark: updated_at (date-time)
 - Transformations: none
 
-[tags](https://developers.intercom.com/intercom-api-reference/reference#list-tags-for-an-app)
+[tags](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/tags/listtags)
 - Endpoint: https://api.intercom.io/tags
 - Primary key fields: id
 - Foreign key fields: none
 - Replication strategy: FULL_TABLE
 - Transformations: none
 
-[teams](https://developers.intercom.com/intercom-api-reference/reference#list-teams)
+[teams](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/teams/listteams)
 - Endpoint: https://api.intercom.io/teams
 - Primary key fields: id
 - Foreign key fields: admin_ids
 - Replication strategy: FULL_TABLE
 - Transformations: none
 
-[users](https://developers.intercom.com/intercom-api-reference/reference#list-users)
+[users](https://developers.intercom.com/docs/references/2.12/rest-api/api.intercom.io/contacts/listcontacts)
 - Endpoint: https://api.intercom.io/users
 - Primary key fields: id
 - Foreign key fields: companies > id, segments > id, tags > id
